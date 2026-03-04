@@ -17,7 +17,6 @@ class QuadratureMethod(Enum):
     RIGHT_RIEMANN = "right_riemann"
     MIDPOINT = "midpoint"
     TRAPEZOIDAL = "trapezoidal"
-    SIMPSON = "simpson"
 
     @property
     def order(self) -> int:
@@ -26,8 +25,6 @@ class QuadratureMethod(Enum):
             return 1
         if self in (QuadratureMethod.MIDPOINT, QuadratureMethod.TRAPEZOIDAL):
             return 2
-        if self == QuadratureMethod.SIMPSON:
-            return 4
         return 1
 
     def richardson_factor(self) -> float:
@@ -38,11 +35,10 @@ class QuadratureMethod(Enum):
     def display_name(self) -> str:
         """Human-readable name for output (German)."""
         names = {
-            QuadratureMethod.LEFT_RIEMANN: "Linksseitige Rechtecksumme",
-            QuadratureMethod.RIGHT_RIEMANN: "Rechtsseitige Rechtecksumme",
+            QuadratureMethod.LEFT_RIEMANN: "Linksseitige Rechtecksumme (Untersumme)",
+            QuadratureMethod.RIGHT_RIEMANN: "Rechtsseitige Rechtecksumme (Obersumme)",
             QuadratureMethod.MIDPOINT: "Mittelpunktregel",
             QuadratureMethod.TRAPEZOIDAL: "Trapezregel",
-            QuadratureMethod.SIMPSON: "Simpson-Regel",
         }
         return names[self]
 

@@ -42,14 +42,14 @@ def _select_method() -> QuadratureMethod:
     for i, m in enumerate(methods, start=1):
         print(f"    {i}. {m.display_name()}")
     while True:
-        choice = _prompt("Nummer (1–5)", "3")
+        choice = _prompt("Nummer (1–4)", "3")
         try:
             idx = int(choice)
             if 1 <= idx <= len(methods):
                 return methods[idx - 1]
         except ValueError:
             pass
-        print("  Bitte eine Zahl zwischen 1 und 5 eingeben.")
+        print("  Bitte eine Zahl zwischen 1 und 4 eingeben.")
 
 
 def _run_workflow() -> None:

@@ -5,9 +5,9 @@ A university-level numerical integration framework in Python with LaTeX input, m
 ## Features
 
 - **LaTeX input**: Enter integrands in LaTeX (e.g. `\sin(x)`, `\exp(-x^2)`, `0.9*(x-3)^3 + 2*(x-3)^2 + 2`). Parsed with SymPy (and optional antlr4), simplified, and converted to a vectorized NumPy function.
-- **Quadrature methods**: Left/Right Riemann sum, Midpoint rule, Trapezoidal rule, Simpson's rule. Each implemented as \( Q_n = \sum_i w_i f(x_i) \) with explicit nodes and weights.
+- **Quadrature methods**: Left/Right Riemann sum (Untersumme/Obersumme), Midpoint rule, Trapezoidal rule. Each implemented as \( Q_n = \sum_i w_i f(x_i) \) with explicit nodes and weights.
 - **Convergence table**: Approximations for \( n, 2n, 4n, \ldots \) with \( |Q_n - Q_{\text{previous}}| \).
-- **Richardson error estimate**: \( E_{\text{est}} = (Q_{2n} - Q_n) / (2^p - 1) \) with \( p = 2 \) (Trapezoidal/Midpoint) or \( p = 4 \) (Simpson).
+- **Richardson error estimate**: \( E_{\text{est}} = (Q_{2n} - Q_n) / (2^p - 1) \) with \( p = 1 \) (Riemann) or \( p = 2 \) (Midpoint/Trapezoidal).
 - **Exact integral**: When SymPy can compute the antiderivative, reports exact value, absolute error, and relative error.
 - **Visualization**: Matplotlib plot of the function and the quadrature structure (rectangles, trapezoids, or nodes).
 
@@ -60,7 +60,7 @@ from src.types import QuadratureMethod
 
 expr, f, _ = latex_to_function(r"\exp(-x**2)")
 print(format_expression(expr))
-result = compute_quadrature(f, 0, 1, 20, QuadratureMethod.SIMPSON)
+result = compute_quadrature(f, 0, 1, 20, QuadratureMethod.TRAPEZOIDAL)
 print("Q_n =", result.approximation)
 ```
 

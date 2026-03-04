@@ -58,7 +58,7 @@ def richardson_estimate(
 
         E_est = (Q_2n - Q_n) / (2^p - 1).
 
-    For Trapezoidal and Midpoint p = 2; for Simpson p = 4.
+    For Trapezoidal and Midpoint p = 2; for Left/Right Riemann p = 1.
     """
     res_n = compute_quadrature(f, a, b, n, method)
     res_2n = compute_quadrature(f, a, b, 2 * n, method)

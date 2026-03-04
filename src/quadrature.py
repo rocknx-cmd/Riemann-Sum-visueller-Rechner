@@ -1,8 +1,8 @@
 """
 Quadrature module: definite integral approximation via Q_n = Σ w_i f(x_i).
 
-Implements five methods with explicit node and weight structure.
-All computations use NumPy vectorization over the subintervals/nodes.
+Implements four methods with explicit node and weight structure:
+left/right Riemann, midpoint, trapezoidal. All computations use NumPy vectorization.
 """
 
 from typing import Callable
@@ -63,22 +63,6 @@ def _trapezoidal_nodes_weights(a: float, b: float, n: int) -> tuple[np.ndarray, 
     return nodes, weights
 
 
-def _simpson_nodes_weights(a: float, b: float, n: int) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Simpson's rule: requires n even. Nodes at x_0,...,x_n (n+1 points).
-    Weights: h/3 * (1, 4, 2, 4, ..., 2, 4, 1). Order p = 4.
-    """
-    if n % 2 != 0:
-        n = n + 1  # ensure even for Simpson
-    nodes = _uniform_nodes(a, b, n)
-    h = (b - a) / n
-    weights = np.empty(n + 1)
-    weights[0] = weights[-1] = h / 3
-    weights[1:-1:2] = 4 * h / 3
-    weights[2:-1:2] = 2 * h / 3
-    return nodes, weights
-
-
 def _compute_quadrature(
     f: Callable[[np.ndarray], np.ndarray],
     nodes: np.ndarray,
@@ -107,7 +91,7 @@ def compute_quadrature(
     Args:
         f: Vectorized function (accepts array, returns array).
         a, b: Integration interval [a, b].
-        n: Number of subintervals (for Simpson, n is forced to be even).
+        n: Number of subintervals.
         method: Quadrature method enum.
         return_nodes_weights: If True, attach nodes and weights to the result.
 
@@ -124,12 +108,9 @@ def compute_quadrature(
         QuadratureMethod.RIGHT_RIEMANN: _right_riemann_nodes_weights,
         QuadratureMethod.MIDPOINT: _midpoint_nodes_weights,
         QuadratureMethod.TRAPEZOIDAL: _trapezoidal_nodes_weights,
-        QuadratureMethod.SIMPSON: _simpson_nodes_weights,
     }
-    # Simpson requires even n; others use n as-is
-    actual_n = (n if n % 2 == 0 else n + 1) if method == QuadratureMethod.SIMPSON else n
     get_nw = dispatcher[method]
-    nodes, weights = get_nw(a, b, actual_n)
+    nodes, weights = get_nw(a, b, n)
     approximation = _compute_quadrature(f, nodes, weights)
 
     out_nodes = tuple(float(x) for x in nodes) if return_nodes_weights else None
@@ -137,7 +118,7 @@ def compute_quadrature(
 
     return QuadratureResult(
         method=method,
-        n=actual_n,
+        n=n,
         a=a,
         b=b,
         approximation=approximation,
@@ -149,17 +130,11 @@ def compute_quadrature(
 def get_nodes_weights_for_plot(
     a: float, b: float, n: int, method: QuadratureMethod
 ) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Return (nodes, weights) for the given method and n (for visualization).
-    Simpson: n is adjusted to be even.
-    """
-    if method == QuadratureMethod.SIMPSON and n % 2 != 0:
-        n = n + 1
+    """Return (nodes, weights) for the given method and n (for visualization)."""
     dispatcher = {
         QuadratureMethod.LEFT_RIEMANN: _left_riemann_nodes_weights,
         QuadratureMethod.RIGHT_RIEMANN: _right_riemann_nodes_weights,
         QuadratureMethod.MIDPOINT: _midpoint_nodes_weights,
         QuadratureMethod.TRAPEZOIDAL: _trapezoidal_nodes_weights,
-        QuadratureMethod.SIMPSON: _simpson_nodes_weights,
     }
     return dispatcher[method](a, b, n)

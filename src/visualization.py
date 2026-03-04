@@ -86,16 +86,6 @@ def _plot_trapezoids(
         ax.fill([v[0] for v in verts], [v[1] for v in verts], color="steelblue", alpha=0.25)
 
 
-def _plot_nodes_only(
-    ax: plt.Axes,
-    f: Callable[[np.ndarray], np.ndarray],
-    nodes: np.ndarray,
-) -> None:
-    """Draw nodes (x_i, f(x_i)) for Simpson (parabolic arcs omitted for clarity)."""
-    f_vals = f(nodes)
-    ax.scatter(nodes, f_vals, color="steelblue", s=30, zorder=5, label="Stützstellen")
-
-
 def plot_integration(
     f: Callable[[np.ndarray], np.ndarray],
     a: float,
@@ -125,8 +115,6 @@ def plot_integration(
         _plot_midpoint_rectangles(ax, f, a, b, n)
     elif method == QuadratureMethod.TRAPEZOIDAL:
         _plot_trapezoids(ax, f, nodes)
-    else:  # Simpson
-        _plot_nodes_only(ax, f, nodes)
 
     ax.set_xlim(a, b)
     y_min, y_max = np.min(y_fine), np.max(y_fine)
