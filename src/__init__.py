@@ -1,10 +1,4 @@
-"""
-Numerical Integration Framework.
-
-A modular, university-level framework for definite integration with
-LaTeX input, multiple quadrature methods, convergence analysis,
-Richardson error estimation, and visualization.
-"""
+# numerische integration framework
 
 from src.types import (
     ConvergenceRow,

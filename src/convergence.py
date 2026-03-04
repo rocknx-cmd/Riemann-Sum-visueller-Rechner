@@ -1,10 +1,4 @@
-"""
-Convergence analysis: sequence of approximations and Richardson error estimate.
-
-Computes Q_n for n = n0, 2*n0, 4*n0, 8*n0, ... and builds a table of
-n, Q_n, and |Q_n - Q_previous|. Also computes the Richardson estimate
-E_est = (Q_2n - Q_n) / (2^p - 1) for methods of order p.
-"""
+# konvergenztabelle + richardson fehlerschätzer
 
 from typing import Callable
 
@@ -27,12 +21,7 @@ def build_convergence_table(
     method: QuadratureMethod,
     num_doublings: int = 5,
 ) -> ConvergenceTable:
-    """
-    Compute approximations for n = n0, 2*n0, 4*n0, ... and record changes.
-
-    For each n, computes Q_n and appends a row with n, Q_n, and
-    |Q_n - Q_previous| (None for the first row).
-    """
+    # n, 2n, 4n, ... mit Q_n und differenz zum vorherigen
     table = ConvergenceTable(method=method, initial_n=initial_n)
     prev_q: float | None = None
     n = initial_n
@@ -53,13 +42,7 @@ def richardson_estimate(
     n: int,
     method: QuadratureMethod,
 ) -> RichardsonEstimate:
-    """
-    Richardson error estimate for a method of order p:
-
-        E_est = (Q_2n - Q_n) / (2^p - 1).
-
-    For Trapezoidal and Midpoint p = 2; for Left/Right Riemann p = 1.
-    """
+    # E_est = (Q_2n - Q_n) / (2^p - 1)
     res_n = compute_quadrature(f, a, b, n, method)
     res_2n = compute_quadrature(f, a, b, 2 * n, method)
     factor = method.richardson_factor()

@@ -1,9 +1,4 @@
-"""
-Numerical Integration Framework — Type definitions and enumerations.
-
-Provides QuadratureMethod enum for method selection and dataclasses
-for structured integration results, convergence data, and error estimates.
-"""
+# types + enums für quadratur
 
 from dataclasses import dataclass, field
 from enum import Enum
@@ -11,7 +6,7 @@ from typing import Callable, Optional
 
 
 class QuadratureMethod(Enum):
-    """Numerical quadrature method. Each corresponds to a formula Q_n = Σ w_i f(x_i)."""
+    # links/rechts/mittelpunkt/trapez
 
     LEFT_RIEMANN = "left_riemann"
     RIGHT_RIEMANN = "right_riemann"
@@ -20,7 +15,7 @@ class QuadratureMethod(Enum):
 
     @property
     def order(self) -> int:
-        """Asymptotic convergence order p: error ∝ n^{-p}."""
+        # für richardson: riemann p=1, trapez/mittel p=2
         if self in (QuadratureMethod.LEFT_RIEMANN, QuadratureMethod.RIGHT_RIEMANN):
             return 1
         if self in (QuadratureMethod.MIDPOINT, QuadratureMethod.TRAPEZOIDAL):
@@ -28,12 +23,9 @@ class QuadratureMethod(Enum):
         return 1
 
     def richardson_factor(self) -> float:
-        """Factor 2^p - 1 used in Richardson extrapolation error estimate."""
-        p = self.order
-        return (2**p) - 1
+        return (2**self.order) - 1
 
     def display_name(self) -> str:
-        """Human-readable name for output (German)."""
         names = {
             QuadratureMethod.LEFT_RIEMANN: "Linksseitige Rechtecksumme (Untersumme)",
             QuadratureMethod.RIGHT_RIEMANN: "Rechtsseitige Rechtecksumme (Obersumme)",
@@ -45,30 +37,25 @@ class QuadratureMethod(Enum):
 
 @dataclass(frozen=True)
 class QuadratureResult:
-    """Result of a single quadrature computation Q_n ≈ ∫_a^b f(x) dx."""
-
     method: QuadratureMethod
     n: int
     a: float
     b: float
     approximation: float
-    nodes: Optional[tuple[float, ...]] = None  # sampling nodes x_i
-    weights: Optional[tuple[float, ...]] = None  # weights w_i (if desired for inspection)
+    nodes: Optional[tuple[float, ...]] = None
+    weights: Optional[tuple[float, ...]] = None
 
 
 @dataclass
 class ConvergenceRow:
-    """One row in the convergence table: n, Q_n, and change from previous."""
 
     n: int
     q_n: float
-    change: Optional[float] = None  # |Q_n - Q_previous|
+    change: Optional[float] = None
 
 
 @dataclass
 class ConvergenceTable:
-    """Convergence analysis: sequence n0, 2*n0, 4*n0, ... with Q_n and changes."""
-
     method: QuadratureMethod
     initial_n: int
     rows: list[ConvergenceRow] = field(default_factory=list)
@@ -79,8 +66,6 @@ class ConvergenceTable:
 
 @dataclass
 class RichardsonEstimate:
-    """Richardson error estimate: E_est = (Q_2n - Q_n) / (2^p - 1)."""
-
     method: QuadratureMethod
     n: int
     q_n: float
@@ -91,8 +76,6 @@ class RichardsonEstimate:
 
 @dataclass
 class ExactIntegralResult:
-    """Exact integral from SymPy (when available)."""
-
     exact_value: float
     absolute_error: float
     relative_error: float

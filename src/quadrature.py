@@ -1,9 +1,4 @@
-"""
-Quadrature module: definite integral approximation via Q_n = Σ w_i f(x_i).
-
-Implements four methods with explicit node and weight structure:
-left/right Riemann, midpoint, trapezoidal. All computations use NumPy vectorization.
-"""
+# quadrature: links/rechts/mittelpunkt/trapez, alle vectorized
 
 from typing import Callable
 
@@ -13,15 +8,11 @@ from src.types import QuadratureMethod, QuadratureResult
 
 
 def _uniform_nodes(a: float, b: float, n: int) -> np.ndarray:
-    """Subinterval boundaries: x_0 = a, x_1, ..., x_n = b (n+1 points)."""
     return np.linspace(a, b, n + 1, dtype=float)
 
 
 def _left_riemann_nodes_weights(a: float, b: float, n: int) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Left Riemann sum: nodes x_i = x_{i-1} (left endpoints), weight = h per node.
-    Q_n = h * Σ_{i=0}^{n-1} f(x_i), with x_i = a + i*h, h = (b-a)/n.
-    """
+    # links: x_i links, gewicht h
     h = (b - a) / n
     nodes = a + np.arange(n, dtype=float) * h
     weights = np.full(n, h)
@@ -29,10 +20,7 @@ def _left_riemann_nodes_weights(a: float, b: float, n: int) -> tuple[np.ndarray,
 
 
 def _right_riemann_nodes_weights(a: float, b: float, n: int) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Right Riemann sum: nodes x_i = x_i (right endpoints), weight = h per node.
-    Q_n = h * Σ_{i=1}^{n} f(x_i), with x_i = a + i*h.
-    """
+    # rechts: x_i rechts, gewicht h
     h = (b - a) / n
     nodes = a + np.arange(1, n + 1, dtype=float) * h
     weights = np.full(n, h)
@@ -40,10 +28,7 @@ def _right_riemann_nodes_weights(a: float, b: float, n: int) -> tuple[np.ndarray
 
 
 def _midpoint_nodes_weights(a: float, b: float, n: int) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Midpoint rule: nodes at subinterval midpoints, weight = h each.
-    x_i = a + (i + 1/2)*h, Q_n = h * Σ_{i=0}^{n-1} f(x_i). Order p = 2.
-    """
+    # mittelpunkt pro intervall
     h = (b - a) / n
     nodes = a + (np.arange(n, dtype=float) + 0.5) * h
     weights = np.full(n, h)
@@ -51,11 +36,7 @@ def _midpoint_nodes_weights(a: float, b: float, n: int) -> tuple[np.ndarray, np.
 
 
 def _trapezoidal_nodes_weights(a: float, b: float, n: int) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Trapezoidal rule: nodes at subinterval endpoints (n+1 points), with
-    weights h/2 at endpoints and h at interior nodes (composite: h/2, h, ..., h, h/2).
-    Q_n = (h/2)*(f(x_0) + 2*Σ_{i=1}^{n-1} f(x_i) + f(x_n)). Order p = 2.
-    """
+    # trapez: randpunkte, gewichte h/2 am rand
     nodes = _uniform_nodes(a, b, n)
     h = (b - a) / n
     weights = np.full(n + 1, h)
@@ -68,7 +49,7 @@ def _compute_quadrature(
     nodes: np.ndarray,
     weights: np.ndarray,
 ) -> float:
-    """Evaluate Q_n = Σ w_i f(x_i) in a vectorized way."""
+    # Q_n = sum w_i * f(x_i)
     f_vals = np.asarray(f(nodes), dtype=float)
     return float(np.dot(weights, f_vals))
 
@@ -82,22 +63,7 @@ def compute_quadrature(
     *,
     return_nodes_weights: bool = False,
 ) -> QuadratureResult:
-    """
-    Compute the definite integral approximation ∫_a^b f(x) dx using the chosen method.
-
-    Implements the general quadrature formula Q_n = Σ_i w_i f(x_i) with
-    method-specific nodes and weights. All evaluations of f are vectorized.
-
-    Args:
-        f: Vectorized function (accepts array, returns array).
-        a, b: Integration interval [a, b].
-        n: Number of subintervals.
-        method: Quadrature method enum.
-        return_nodes_weights: If True, attach nodes and weights to the result.
-
-    Returns:
-        QuadratureResult with approximation and optional nodes/weights.
-    """
+    # näherung für int_a^b f(x) dx
     if n < 1:
         raise ValueError("n must be at least 1.")
     if a >= b:
@@ -130,7 +96,7 @@ def compute_quadrature(
 def get_nodes_weights_for_plot(
     a: float, b: float, n: int, method: QuadratureMethod
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Return (nodes, weights) for the given method and n (for visualization)."""
+    # für plot
     dispatcher = {
         QuadratureMethod.LEFT_RIEMANN: _left_riemann_nodes_weights,
         QuadratureMethod.RIGHT_RIEMANN: _right_riemann_nodes_weights,

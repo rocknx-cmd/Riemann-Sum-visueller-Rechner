@@ -1,12 +1,6 @@
-"""
-Exact integral computation via SymPy when the antiderivative is available.
+# exaktes integral wenn sympy es schafft
 
-Computes ∫_a^b f(x) dx symbolically, then evaluates at a and b to get
-the exact value. Returns absolute and relative error with respect to
-a given numerical approximation.
-"""
-
-from typing import Callable, Optional
+from typing import Optional
 
 import numpy as np
 import sympy as sp
@@ -21,16 +15,10 @@ def compute_exact_integral(
     b: float,
     numerical_approximation: float,
 ) -> ExactIntegralResult:
-    """
-    Compute the exact definite integral using SymPy and compare to the approximation.
-
-    If SymPy can find an antiderivative, evaluates F(b) - F(a) and computes
-    absolute and relative error. Otherwise returns success=False.
-    """
+    # F(b)-F(a), sonst success=False
     symbol = get_symbol(expr)
     try:
         antiderivative = sp.integrate(expr, symbol)
-        # Handle symbolic result that might still contain unevaluated integrals
         if hasattr(antiderivative, "evalf") and not antiderivative.has(sp.Integral):
             F_b = float(antiderivative.subs(symbol, b).evalf())
             F_a = float(antiderivative.subs(symbol, a).evalf())

@@ -1,9 +1,4 @@
-"""
-Visualization: presentation-ready plots of the integrand and quadrature structure.
-
-Plots the continuous function f(x) and the sampling structure (rectangles,
-trapezoids, or nodes) according to the selected method.
-"""
+# plot: funktion + rechtecke/trapeze
 
 from typing import Callable
 
@@ -15,7 +10,6 @@ from src.types import QuadratureMethod
 
 
 def _fine_curve_x(a: float, b: float, num_points: int = 500) -> np.ndarray:
-    """Dense x grid for smooth function curve."""
     return np.linspace(a, b, num_points)
 
 
@@ -27,14 +21,12 @@ def _plot_riemann_rectangles(
     n: int,
     use_left: bool,
 ) -> None:
-    """Draw rectangles for Left (use_left=True) or Right (use_left=False) Riemann sum."""
     h = (b - a) / n
     for i in range(n):
         x_left = a + i * h
         x_right = a + (i + 1) * h
         x_sample = x_left if use_left else x_right
         y_val = float(f(np.array([x_sample]))[0])
-        # Rectangle: base [x_left, x_right], height from 0 to y_val
         verts = [
             [x_left, 0],
             [x_right, 0],
@@ -53,7 +45,6 @@ def _plot_midpoint_rectangles(
     b: float,
     n: int,
 ) -> None:
-    """Draw rectangles with height at midpoint of each subinterval."""
     h = (b - a) / n
     for i in range(n):
         x_left = a + i * h
@@ -76,7 +67,6 @@ def _plot_trapezoids(
     f: Callable[[np.ndarray], np.ndarray],
     nodes: np.ndarray,
 ) -> None:
-    """Draw trapezoids between consecutive (x_i, f(x_i)) and (x_{i+1}, f(x_{i+1}))."""
     f_vals = f(nodes)
     for i in range(len(nodes) - 1):
         x0, x1 = nodes[i], nodes[i + 1]
@@ -94,12 +84,6 @@ def plot_integration(
     method: QuadratureMethod,
     title: str | None = None,
 ) -> plt.Figure:
-    """
-    Create a presentation-ready figure: function curve + quadrature structure.
-
-    The plot shows the continuous curve and the sampling structure (rectangles,
-    trapezoids, or nodes) according to the method. Includes labels, legend, and title.
-    """
     fig, ax = plt.subplots(figsize=(10, 6))
     x_fine = _fine_curve_x(a, b)
     y_fine = f(x_fine)
@@ -133,11 +117,9 @@ def plot_integration(
 
 
 def show_plot(fig: plt.Figure) -> None:
-    """Display the figure (for interactive use)."""
     plt.figure(fig.number)
     plt.show()
 
 
 def save_plot(fig: plt.Figure, path: str) -> None:
-    """Save the figure to a file."""
     fig.savefig(path, dpi=150, bbox_inches="tight")

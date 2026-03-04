@@ -1,10 +1,4 @@
-"""
-CLI: Benutzerdialog und Ausgabe auf Deutsch.
-
-Steuert den Ablauf: LaTeX-Eingabe → Anzeige der Funktion → Intervall →
-Methode → n → Näherung → Konvergenztabelle → Richardson-Fehler →
-optional exaktes Integral → optional Grafik.
-"""
+# cli für numerische integration
 
 from typing import Optional
 
@@ -19,7 +13,6 @@ from src.visualization import plot_integration, show_plot
 
 
 def _prompt(prompt_text: str, default: Optional[str] = None) -> str:
-    """Eingabezeile lesen; bei Leerzeile den Standardwert zurückgeben."""
     suffix = f" [{default}]" if default is not None else ""
     line = input(f"{prompt_text}{suffix}: ").strip()
     if not line and default is not None:
@@ -28,7 +21,6 @@ def _prompt(prompt_text: str, default: Optional[str] = None) -> str:
 
 
 def _parse_float(s: str, name: str) -> float:
-    """String in Dezimalzahl umwandeln."""
     try:
         return float(s.replace(",", "."))
     except ValueError:
@@ -36,7 +28,6 @@ def _parse_float(s: str, name: str) -> float:
 
 
 def _select_method() -> QuadratureMethod:
-    """Methode per Nummer wählen."""
     methods = list(QuadratureMethod)
     print("\n  Welche Methode soll verwendet werden?")
     for i, m in enumerate(methods, start=1):
@@ -53,13 +44,12 @@ def _select_method() -> QuadratureMethod:
 
 
 def _run_workflow() -> None:
-    """Hauptablauf des Programms."""
     print("\n" + "=" * 60)
     print("  Numerische Integration")
     print("  Fläche unter einer Kurve f(x) von a bis b")
     print("=" * 60)
 
-    # --- Funktion ---
+    # funktion
     print("\n  Gib die Funktion f(x) ein.")
     print("  Beispiele:  sin(x)   oder   x**2   oder   exp(-x**2)")
     latex_input = _prompt("f(x)", "x**2")
@@ -75,7 +65,7 @@ def _run_workflow() -> None:
         print("  " + line)
     print("  " + "-" * 40)
 
-    # --- Intervall ---
+    # intervall
     print("\n  Von wo bis wo soll integriert werden?")
     a_str = _prompt("Untere Grenze a", "0")
     b_str = _prompt("Obere Grenze b", "1")
@@ -89,7 +79,7 @@ def _run_workflow() -> None:
         print("\n  Fehler: a muss kleiner als b sein.")
         return
 
-    # --- Methode und n ---
+    # methode + n
     method = _select_method()
     print("\n  Wie fein soll unterteilt werden? (Mehr = genauer, aber langsamer)")
     n_str = _prompt("Anzahl Unterteilungen n", "10")
@@ -101,7 +91,7 @@ def _run_workflow() -> None:
         print(f"\n  Fehler: {e}")
         return
 
-    # --- Näherung ---
+    # näherung
     result = compute_quadrature(f, a, b, n, method)
     print("\n" + "=" * 60)
     print("  ERGEBNIS")
@@ -112,7 +102,7 @@ def _run_workflow() -> None:
     print(f"  Näherungswert: {result.approximation:.10g}")
     print()
 
-    # --- Konvergenztabelle (einfach erklärt) ---
+    # konvergenz
     print("  Was passiert, wenn man feiner unterteilt?")
     print("  (Je mehr Unterteilungen, desto genauer wird das Ergebnis.)")
     print("  " + "-" * 52)
@@ -124,14 +114,14 @@ def _run_workflow() -> None:
         print(f"  {row.n:>8}  {row.q_n:>16.10g}  {change_str:>24}")
     print()
 
-    # --- Richardson-Fehler (einfach erklärt) ---
+    # richardson
     rich = richardson_estimate(f, a, b, n, method)
     print("  Geschätzter Fehler (Richardson):")
     print("  Aus der Verbesserung von n auf 2*n lässt sich der Fehler schätzen.")
     print(f"  Geschätzter Fehler ≈ {abs(rich.estimated_error):.4e}")
     print()
 
-    # --- Exaktes Integral ---
+    # exakt
     exact_choice = _prompt("Exakten Wert berechnen (wenn möglich)? (j/n)", "j")
     if exact_choice.lower().startswith("j") or exact_choice.lower() == "y":
         exact_result = compute_exact_integral(expr, a, b, result.approximation)
@@ -144,7 +134,7 @@ def _run_workflow() -> None:
             print("  Exakter Wert konnte nicht berechnet werden.")
         print()
 
-    # --- Grafik ---
+    # plot
     plot_choice = _prompt("Grafik anzeigen? (j/n)", "j")
     if plot_choice.lower().startswith("j") or plot_choice.lower() == "y":
         fig = plot_integration(
@@ -164,7 +154,6 @@ def _run_workflow() -> None:
 
 
 def run_cli() -> None:
-    """Einstieg: Ablauf starten und Strg+C abfangen."""
     try:
         _run_workflow()
     except KeyboardInterrupt:
