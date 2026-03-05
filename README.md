@@ -36,7 +36,7 @@ Flow: enter LaTeX function → view symbolic form → enter interval $\([a, b]\)
 ## Project structure
 
 ```
-MathePL/
+Riemann-Sum-visueller-Rechner/
 ├── main.py                 # Entry point
 ├── requirements.txt
 ├── README.md
