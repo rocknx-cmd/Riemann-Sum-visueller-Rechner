@@ -1,6 +1,6 @@
-# Matematik PL -> integrale Nummerisch rechnen
+# Matematik PL -> integrale Numerisch rechnen
 
-Ein Python-Framework, welches nummerische Integration mit einem LaTeX-Input, und verschiedenen Methoden der Summenformel, das Integral einer Funktion ausrechnet. Ganz ohne analysis (nur wenn man will) und mit visualisierung der angewandten Rieman-Summe.
+Ein Python-Framework, welches numerische Integration mit einem LaTeX-Input, und verschiedenen Methoden der Summenformel, das Integral einer Funktion ausrechnet. Ganz ohne analysis (nur wenn man will) und mit visualisierung der angewandten Rieman-Summe.
 
 ## Features
 
