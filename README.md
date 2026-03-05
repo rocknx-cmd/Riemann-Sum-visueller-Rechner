@@ -1,15 +1,15 @@
-# Numerical Integration Framework
+# Matematik PL -> integrale Nummerisch rechnen
 
-A university-level numerical integration framework in Python with LaTeX input, multiple quadrature methods, convergence analysis, Richardson error estimation, and presentation-ready visualization.
+Ein Python-Framework, welches nummerische Integration mit einem LaTeX-Input, und verschiedenen Methoden der Summenformel, das Integral einer Funktion ausrechnet. Ganz ohne analysis (nur wenn man will) und mit visualisierung der angewandten Rieman-Summe.
 
 ## Features
 
-- **LaTeX input**: Enter integrands in LaTeX (e.g. `\sin(x)`, `\exp(-x^2)`, `0.9*(x-3)^3 + 2*(x-3)^2 + 2`). Parsed with SymPy (and optional antlr4), simplified, and converted to a vectorized NumPy function.
-- **Quadrature methods**: Left/Right Riemann sum (Untersumme/Obersumme), Midpoint rule, Trapezoidal rule. Each implemented as \( Q_n = \sum_i w_i f(x_i) \) with explicit nodes and weights.
-- **Convergence table**: Approximations for \( n, 2n, 4n, \ldots \) with \( |Q_n - Q_{\text{previous}}| \).
-- **Richardson error estimate**: \( E_{\text{est}} = (Q_{2n} - Q_n) / (2^p - 1) \) with \( p = 1 \) (Riemann) or \( p = 2 \) (Midpoint/Trapezoidal).
-- **Exact integral**: When SymPy can compute the antiderivative, reports exact value, absolute error, and relative error.
-- **Visualization**: Matplotlib plot of the function and the quadrature structure (rectangles, trapezoids, or nodes).
+- **LaTeX Input**: Formel eingeben in LaTeX (z.B.: `\sin(x)`, `\exp(-x^2)`, `0.9*(x-3)^3 + 2*(x-3)^2 + 2`). Mit SymPy wird das dann geparsed, simplifiziert, and konvertiert zu einer NumPy Funktion (diesmal mit Vektoren).
+- **Rechnungsmethode**: Es gibt folgende Arten: Links/Rechts- Summe  (Untersumme/Obersumme), Mittelsumme und Trapezsumme. Jede Methode wird als $\sum_i \Delta(x)_i f(x_i)$ (mit $\Delta(x) = \frac{b-a}{n}$) implementiert (wobei manche komplizierter werden als andere).
+- **Konvergenz Tabelle**: Approximierung für $\( n, 2n, 4n, \ldots \)$ mit $\( |Q_n - Q_{\text{prev}}| \)$.
+- **Richardson-Error**: $\( E_{\text{est}} = (Q_{2n} - Q_n) / (2^p - 1) \)$ mit $\( p = 1 \)$ (Riemann) oder $\( p = 2 \)$ (Mittelpunkt/Trapez).
+- **Exaktes integral**: Falls SymPy die Aufleitung rechnen kann, wird der genaue Wert des bestimmten Integrals widergegeben. Dazu kommt auch der relative Error zu der Summen-Methode.
+- **Visualisierung**: Matplotlib kann die Funktion inklusive der eingezeichneten Methode Plotten um zu zeigen wie akkurat die verschiednenen Methoden sind (abgesehen von den Werten).
 
 ## Requirements
 
@@ -31,7 +31,7 @@ Run the interactive CLI:
 python main.py
 ```
 
-Flow: enter LaTeX function → view symbolic form → enter interval \([a, b]\) → choose method → enter \( n \) → see approximation, convergence table, Richardson estimate → optionally exact integral and plot.
+Flow: enter LaTeX function → view symbolic form → enter interval $\([a, b]\)$ → choose method → enter $\( n \)$ → see approximation, convergence table, Richardson estimate → optionally exact integral and plot.
 
 ## Project structure
 
@@ -49,19 +49,6 @@ MathePL/
     ├── exact_integral.py  # Symbolic exact integral when possible
     ├── visualization.py   # Matplotlib figures
     └── cli.py             # Interactive workflow and output
-```
-
-## Example (programmatic)
-
-```python
-from src.function_parser import latex_to_function, format_expression
-from src.quadrature import compute_quadrature
-from src.types import QuadratureMethod
-
-expr, f, _ = latex_to_function(r"\exp(-x**2)")
-print(format_expression(expr))
-result = compute_quadrature(f, 0, 1, 20, QuadratureMethod.TRAPEZOIDAL)
-print("Q_n =", result.approximation)
 ```
 
 ## License

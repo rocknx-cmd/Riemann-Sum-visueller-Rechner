@@ -116,9 +116,9 @@ def _run_workflow() -> None:
 
     # richardson
     rich = richardson_estimate(f, a, b, n, method)
-    print("  Geschätzter Fehler (Richardson):")
+    print("  Geschätzter Fehler:")
     print("  Aus der Verbesserung von n auf 2*n lässt sich der Fehler schätzen.")
-    print(f"  Geschätzter Fehler ≈ {abs(rich.estimated_error):.4e}")
+    print(f"  Geschätzter Fehler ~ {abs(rich.estimated_error):.4e}")
     print()
 
     # exakt
