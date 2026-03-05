@@ -4,7 +4,7 @@ Ein Python-Framework, welches numerische Integration mit einem LaTeX-Input, und 
 
 ## Features
 
-- **LaTeX Input**: Formel eingeben in LaTeX (z.B.: `\sin(x)`, `\exp(-x^2)`, `0.9*(x-3)^3 + 2*(x-3)^2 + 2`). Mit SymPy wird das dann geparsed, simplifiziert, and konvertiert zu einer NumPy Funktion (diesmal mit Vektoren).
+- **LaTeX Input**: Formel eingeben in LaTeX (z.B.: $`\sin(x)`$, $`\exp(-x^2)`$, $`0.9*(x-3)^3 + 2*(x-3)^2 + 2`$). Mit SymPy wird das dann geparsed, simplifiziert, and konvertiert zu einer NumPy Funktion (diesmal mit Vektoren).
 - **Rechnungsmethode**: Es gibt folgende Arten: Links/Rechts- Summe  (Untersumme/Obersumme), Mittelsumme und Trapezsumme. Jede Methode wird als $\sum_i \Delta(x)_i f(x_i)$ (mit $\Delta(x) = \frac{b-a}{n}$) implementiert (wobei manche komplizierter werden als andere).
 - **Konvergenz Tabelle**: Approximierung für $\( n, 2n, 4n, \ldots \)$ mit $\( |Q_n - Q_{\text{prev}}| \)$.
 - **Richardson-Error**: $\( E_{\text{est}} = (Q_{2n} - Q_n) / (2^p - 1) \)$ mit $\( p = 1 \)$ (Riemann) oder $\( p = 2 \)$ (Mittelpunkt/Trapez).
